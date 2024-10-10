@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tính toán cửa (đơn vị cm)</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+        section {
+            margin-bottom: 20px;
+        }
+        button {
+            margin-left: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .checkbox-cell {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>Tính toán các loại cửa</h1>
+
+    <!-- Form nhập thông tin cửa -->
+    <section>
+        <h2>Thêm cửa mới</h2>
+        <form id="form-cua">
+            <label for="loai-cua">Loại cửa:</label>
+            <select id="loai-cua" name="loai-cua">
+                <option value="cua-di-1-canh">Cửa đi 1 cánh</option>
+                <option value="cua-di-2-canh">Cửa đi 2 cánh</option>
+                <option value="cua-di-4-canh">Cửa đi 4 cánh</option>
+                <option value="cua-so-lua-2-canh">Cửa sổ lùa 2 cánh</option>
+                <option value="cua-so-lua-3-canh">Cửa sổ lùa 3 cánh</option>
+                <option value="cua-so-lua-4-canh">Cửa sổ lùa 4 cánh</option>
+                <option value="cua-so-mo-1-canh">Cửa sổ mở 1 cánh</option>
+                <option value="cua-so-mo-2-canh">Cửa sổ mở 2 cánh</option>
+                <option value="bong-gio">Bông gió</option>
+            </select>
+            <br><br>
+
+            <label for="chieu-cao">Chiều cao (cm):</label>
+            <input type="number" id="chieu-cao" name="chieu-cao" required min="0">
+            <br><br>
+
+            <label for="chieu-ngang">Chiều ngang (cm):</label>
+            <input type="number" id="chieu-ngang" name="chieu-ngang" required min="0">
+            <br><br>
+
+            <button type="button" onclick="themCua()">Thêm cửa</button>
+        </form>
+    </section>
+
+    <!-- Danh sách cửa đã thêm -->
+    <section>
+        <h2>Danh sách cửa đã thêm</h2>
+        <div id="danh-sach-cua"></div>
+        <button type="button" onclick="tinhToan()">Tính toán kích thước</button>
+    </section>
+
+    <!-- Kết quả tính toán -->
+    <section>
+        <h2>Kết quả tính toán</h2>
+        <div id="ket-qua-tinh-toan"></div>
+        <table id="bang-danh-sach-thanh">
+            <thead>
+                <tr>
+                    <th>Chọn</th>
+                    <th>Tên cửa</th>
+                    <th>Kích thước thanh đứng (cm)</th>
+                    <th>Kích thước thanh ngang (cm)</th>
+                    <th>Kích thước thanh đứng khung bao (cm)</th>
+                    <th>Kích thước thanh ngang khung bao (cm)</th>
+                </tr>
+            </thead>
+            <tbody id="danh-sach-thanh"></tbody>
+        </table>
+    </section>
+
+    <!-- JavaScript xử lý -->
+    <script>
+        let soCuaDi1Canh = 1;
+        let soCuaDi2Canh = 1;
+        let soCuaDi4Canh = 1;
+        let soCuaLua2Canh = 1;
+        let soCuaLua3Canh = 1;
+        let soCuaLua4Canh = 1;
+        let soCuaMo1Canh = 1;
+        let soCuaMo2Canh = 1;
+        let soBongGio = 1;
+
+        let danhSachCua = [];
+        let checkedStates = [];
+
+        function themCua() {
+            const loaiCua = document.getElementById('loai-cua').value;
+            const chieuCao = parseFloat(document.getElementById('chieu-cao').value);
+            const chieuNgang = parseFloat(document.getElementById('chieu-ngang').value);
+
+            let tenCua = '';
+            let kichThuocThanhDung = 0;
+            let kichThuocThanhNgang = 0;
+            let kichThuocThanhDungKhungBao = 0;
+            let kichThuocThanhNgangKhungBao = 0;
+            let soLuongThanhDung = 0;
+            let soLuongThanhNgang = 0;
+
+            // Tính toán cho từng loại cửa (chuyển đơn vị sang cm)
+            switch (loaiCua) {
+                case 'cua-di-1-canh':
+                    tenCua = `Cửa đi 1 cánh số ${soCuaDi1Canh}`;
+                    kichThuocThanhDung = chieuCao - 4.6;
+                    kichThuocThanhNgang = chieuNgang - 8.2;
+                    kichThuocThanhDungKhungBao = chieuCao;
+                    kichThuocThanhNgangKhungBao = chieuNgang;
+                    soLuongThanhDung = 2;
+                    soLuongThanhNgang = 2;
+                    soCuaDi1Canh++;
+                    break;
+                case 'cua-di-2-canh':
+                    tenCua = `Cửa đi 2 cánh số ${soCuaDi2Canh}`;
+                    kichThuocThanhDung = chieuCao - 4.6;
+                    kichThuocThanhNgang = (chieuNgang - 8.7) / 2;
+                    kichThuocThanhDungKhungBao = chieuCao;
+                    kichThuocThanhNgangKhungBao = chieuNgang + 3.2; // Khung bao thêm 3.2 cm
+                    soLuongThanhDung = 4;
+                    soLuongThanhNgang = 4;
+                    soCuaDi2Canh++;
+                    break;
+                case 'cua-di-4-canh':
+                    tenCua = `Cửa đi 4 cánh số ${soCuaDi4Canh}`;
+                    kichThuocThanhDung = chieuCao - 4.6;
+                    kichThuocThanhNgang = (chieuNgang - 9.7) / 4;
+                    kichThuocThanhDungKhungBao = chieuCao;
+                    kichThuocThanhNgangKhungBao = chieuNgang + 6.4; // Khung bao thêm 6.4 cm
+                    soLuongThanhDung = 8;
+                    soLuongThanhNgang = 8;
+                    soCuaDi4Canh++;
+                    break;
+                case 'cua-so-lua-2-canh':
+                    tenCua = `Cửa sổ lùa 2 cánh số ${soCuaLua2Canh}`;
+                    kichThuocThanhDung = chieuCao - 4.7;
+                    kichThuocThanhNgang = (chieuNgang - 15.4) / 2;
+                    kichThuocThanhDungKhungBao = chieuCao;
+                    kichThuocThanhNgangKhungBao = chieuNgang + 8.4; // Khung bao thêm 8.4 cm
+                    soLuongThanhDung = 4;
+                    soLuongThanhNgang = 4;
+                    soCuaLua2Canh++;
+                    break;
+                case 'cua-so-lua-3-canh':
+                    tenCua = `Cửa sổ lùa 3 cánh số ${soCuaLua3Canh}`;
+                    kichThuocThanhDung = chieuCao - 5;
+                    kichThuocThanhNgang = (chieuNgang - 17.4) / 3;
+                    kichThuocThanhDungKhungBao = chieuCao;
+                    kichThuocThanhNgangKhungBao = chieuNgang + 9.4; // Khung bao thêm 9.4 cm
+                    soLuongThanhDung = 6;
+                    soLuongThanhNgang = 6;
+                    soCuaLua3Canh++;
+                    break;
+                case 'cua-so-lua-4-canh':
+                    tenCua = `Cửa sổ lùa 4 cánh số ${soCuaLua4Canh}`;
+                    kichThuocThanhDung = chieuCao - 5;
+                    kichThuocThanhNgang = (chieuNgang - 19.4) / 4;
+                    kichThuocThanhDungKhungBao = chieuCao;
+                    kichThuocThanhNgangKhungBao = chieuNgang + 10.4; // Khung bao thêm 10.4 cm
+                    soLuongThanhDung = 8;
+                    soLuongThanhNgang = 8;
+                    soCuaLua4Canh++;
+                    break;
+                case 'cua-so-mo-1-canh':
+                    tenCua = `Cửa sổ mở 1 cánh số ${soCuaMo1Canh}`;
+                    kichThuocThanhDung = chieuCao - 5;
+                    kichThuocThanhNgang = chieuNgang - 5.5;
+                    kichThuocThanhDungKhungBao = chieuCao;
+                    kichThuocThanhNgangKhungBao = chieuNgang; // Khung bao không thay đổi
+                    soLuongThanhDung = 2;
+                    soLuongThanhNgang = 2;
+                    soCuaMo1Canh++;
+                    break;
+                case 'cua-so-mo-2-canh':
+                    tenCua = `Cửa sổ mở 2 cánh số ${soCuaMo2Canh}`;
+                    kichThuocThanhDung = chieuCao - 5;
+                    kichThuocThanhNgang = (chieuNgang - 5.5) / 2;
+                    kichThuocThanhDungKhungBao = chieuCao;
+                    kichThuocThanhNgangKhungBao = chieuNgang; // Khung bao không thay đổi
+                    soLuongThanhDung = 4;
+                    soLuongThanhNgang = 4;
+                    soCuaMo2Canh++;
+                    break;
+                case 'bong-gio':
+                    tenCua = `Bông gió số ${soBongGio}`;
+                    kichThuocThanhDung = chieuCao;
+                    kichThuocThanhNgang = chieuNgang;
+                    kichThuocThanhDungKhungBao = chieuCao;
+                    kichThuocThanhNgangKhungBao = chieuNgang; // Khung bao không thay đổi
+                    soLuongThanhDung = 2;
+                    soLuongThanhNgang = 2;
+                    soBongGio++;
+                    break;
+            }
+
+            // Thêm cửa vào danh sách
+            danhSachCua.push({ 
+                tenCua, 
+                kichThuocThanhDung, 
+                kichThuocThanhNgang, 
+                kichThuocThanhDungKhungBao,
+                kichThuocThanhNgangKhungBao,
+                soLuongThanhDung, 
+                soLuongThanhNgang 
+            });
+            checkedStates.push(false); // Khởi tạo trạng thái cho thanh nhôm
+
+            capNhatDanhSachCua();
+            document.getElementById('form-cua').reset(); // Reset form sau khi thêm cửa
+        }
+
+        function xoaCua(index) {
+            danhSachCua.splice(index, 1);
+            checkedStates.splice(index, 1); // Xóa trạng thái ô tích
+            capNhatDanhSachCua();
+        }
+
+        function capNhatDanhSachCua() {
+            const danhSachElement = document.getElementById('danh-sach-cua');
+            danhSachElement.innerHTML = '';
+
+            danhSachCua.forEach((cua, index) => {
+                const cuaDiv = document.createElement('div');
+                cuaDiv.textContent = `${cua.tenCua}`;
+                const xoaButton = document.createElement('button');
+                xoaButton.textContent = 'Xóa';
+                xoaButton.onclick = () => xoaCua(index);
+                cuaDiv.appendChild(xoaButton);
+                danhSachElement.appendChild(cuaDiv);
+            });
+        }
+
+        function tinhToan() {
+            const ketQuaElement = document.getElementById('ket-qua-tinh-toan');
+            const danhSachThanhElement = document.getElementById('danh-sach-thanh');
+            ketQuaElement.innerHTML = '';
+            danhSachThanhElement.innerHTML = '';
+
+            // Cập nhật bảng thanh nhôm
+            danhSachCua.forEach((cua, index) => {
+                const ketQuaDiv = document.createElement('div');
+                ketQuaDiv.textContent = `Kết quả cho ${cua.tenCua}: Thanh đứng ${cua.kichThuocThanhDung}cm x ${cua.soLuongThanhDung}, Thanh ngang ${cua.kichThuocThanhNgang}cm x ${cua.soLuongThanhNgang}`;
+                ketQuaElement.appendChild(ketQuaDiv);
+
+                // Tạo hàng cho bảng danh sách thanh
+                const row = document.createElement('tr');
+                
+                const checkboxCell = document.createElement('td');
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.checked = checkedStates[index]; // Giữ nguyên trạng thái
+                checkbox.onchange = () => {
+                    checkedStates[index] = checkbox.checked; // Cập nhật trạng thái
+                };
+                checkboxCell.className = 'checkbox-cell';
+                checkboxCell.appendChild(checkbox);
+                row.appendChild(checkboxCell);
+
+                const tenCuaCell = document.createElement('td');
+                tenCuaCell.textContent = cua.tenCua;
+                row.appendChild(tenCuaCell);
+
+                const kichThuocDungCell = document.createElement('td');
+                kichThuocDungCell.textContent = `${cua.kichThuocThanhDung}cm`;
+                row.appendChild(kichThuocDungCell);
+
+                const kichThuocNgangCell = document.createElement('td');
+                kichThuocNgangCell.textContent = `${cua.kichThuocThanhNgang}cm`;
+                row.appendChild(kichThuocNgangCell);
+
+                const kichThuocDungKhungBaoCell = document.createElement('td');
+                kichThuocDungKhungBaoCell.textContent = `${cua.kichThuocThanhDungKhungBao}cm`;
+                row.appendChild(kichThuocDungKhungBaoCell);
+
+                const kichThuocNgangKhungBaoCell = document.createElement('td');
+                kichThuocNgangKhungBaoCell.textContent = `${cua.kichThuocThanhNgangKhungBao}cm`;
+                row.appendChild(kichThuocNgangKhungBaoCell);
+
+                danhSachThanhElement.appendChild(row);
+            });
+        }
+    </script>
+</body>
+</html>
